@@ -1,0 +1,16 @@
+Common.cfg
+PeerInfo.cfg
+
+*.jpg
+*.png
+*.dat
+
+peer_*/
+
+*.log
+
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
