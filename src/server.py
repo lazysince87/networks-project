@@ -1,3 +1,4 @@
+from strategy_manager import StrategyManager
 import socket
 import threading
 
