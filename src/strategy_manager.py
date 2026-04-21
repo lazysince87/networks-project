@@ -134,6 +134,9 @@ class StrategyManager:
 
     # Runs every p seconds to choose preferred neighbors.
     def preferred_loop(self):
+        #wait one full interval before the first evaluation
+        #so peers have time to connect and exchange bitfields.
+        self.stop_event.wait(self.p)
         while not self.stop_event.is_set():
             try:
                 interested = self.get_interested_neighbors()
@@ -147,6 +150,8 @@ class StrategyManager:
 
     # Runs every m seconds to choose optimistic unchoke neighbor.
     def optimistic_loop(self):
+        #wait one full interval before the first evaluation.
+        self.stop_event.wait(self.m)
         while not self.stop_event.is_set():
             try:
                 choked = self.get_choked_neighbors()
