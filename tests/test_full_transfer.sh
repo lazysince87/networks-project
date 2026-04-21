@@ -19,9 +19,11 @@ fi
 cp templates/PeerInfo_local.cfg templates/PeerInfo.cfg
 cp templates/Common_local.cfg  templates/Common.cfg
 
-#create file
-mkdir -p peer_1001
-dd if=/dev/urandom of="peer_1001/${FILE_NAME}" bs=1024 count=$((FILE_SIZE / 1024)) 2>/dev/null
+#create dummy file in root
+dd if=/dev/urandom of="${FILE_NAME}" bs=1024 count=$((FILE_SIZE / 1024)) 2>/dev/null
+
+#run setup script
+bash setup_test.sh "${FILE_NAME}"
 
 #start seed and leechers
 python3 src/peerProcess.py 1001 &

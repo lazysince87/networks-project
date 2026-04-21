@@ -18,20 +18,24 @@ fi
 cp templates/PeerInfo_local.cfg templates/PeerInfo.cfg
 cp templates/Common_local.cfg templates/Common.cfg
 
+echo "=== Creating dummy file and running setup_test.sh ==="
+dd if=/dev/urandom of="testfile_local.dat" bs=1024 count=100 2>/dev/null
+bash setup_test.sh testfile_local.dat
+
 echo "starting peer 1001"
-python src/peerProcess.py 1001 &
+python3 src/peerProcess.py 1001 &
 PID1=$!
 sleep 1
 
 echo "=== Starting Peer 1002 (background) ==="
 echo "starting peer 1002"
-python src/peerProcess.py 1002 &
+python3 src/peerProcess.py 1002 &
 PID2=$!
 sleep 1
 
 echo "=== Starting Peer 1003 (background) ==="
 echo "starting peer 1003"
-python src/peerProcess.py 1003 &
+python3 src/peerProcess.py 1003 &
 PID3=$!
 sleep 3
 
