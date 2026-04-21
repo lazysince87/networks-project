@@ -18,7 +18,7 @@ chmod +x tests/test_local_connections.sh
 2. run setup_test.sh in wsl
 
 ```bash
-bash setup_test.sh (test_file.dat)
+bash setup_test.sh test_file.dat
 ```
    
 3. run a single peer manually (in separate terminals in ORDER):
