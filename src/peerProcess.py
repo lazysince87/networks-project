@@ -457,18 +457,29 @@ class Peer:
     def _on_optimistic_selected(self, peer_id):
         if peer_id is None:
             return
+        prev = self._optimistic_id
         self._optimistic_id = peer_id
+
         self.logger.log_optimistic_unchoked(peer_id)
 
-        should_unchoke = False
-        with self.state_lock:
-            ni = self.neighbors.get(peer_id)
-            if ni is not None and ni['am_choking']:
-                ni['am_choking'] = False
-                should_unchoke = True
+        actions = []
 
-        if should_unchoke:
-            self._send_to(peer_id, UNCHOKE)
+        with self.state_lock:
+            # re-choke previous optimistic neighbor if needed
+            if prev is not None and prev != peer_id:
+                prev_ni = self.neighbors.get(prev)
+                if prev_ni and not prev_ni['am_choking']:
+                    prev_ni['am_choking'] = True
+                    actions.append((prev, CHOKE))
+
+            # unchoke new optimistic neighbor
+            ni = self.neighbors.get(peer_id)
+            if ni and ni['am_choking']:
+                ni['am_choking'] = False
+                actions.append((peer_id, UNCHOKE))
+
+        for rid, mt in actions:
+            self._send_to(rid, mt)
 
     def start(self):
         threading.Thread(target=self._server_thread, daemon=True).start()

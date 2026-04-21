@@ -144,8 +144,8 @@ class StrategyManager:
                 complete = self.has_complete_file()
                 preferred = select_preferred_neighbors(interested, rates, self.k, complete)
                 self.on_preferred_selected(preferred)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"StrategyManager preferred_loop error: {e}")
             self.stop_event.wait(self.p)
 
     # Runs every m seconds to choose optimistic unchoke neighbor.
@@ -158,6 +158,7 @@ class StrategyManager:
                 interested = self.get_interested_neighbors()
                 optimistic = select_optimistic_unchoke(choked, interested)
                 self.on_optimistic_selected(optimistic)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"StrategyManager optimistic_loop error: {e}")
             self.stop_event.wait(self.m)
+    
