@@ -15,7 +15,13 @@ chmod +x tests/test_local_connections.sh
 ./tests/test_local_connections.sh
 ```
 
-2. run a single peer manually (in separate terminals):
+2. run setup_test.sh in wsl
+
+```bash
+bash setup_test.sh (test_file.dat)
+```
+   
+3. run a single peer manually (in separate terminals in ORDER):
 
 ```bash
 python3 src/peerProcess.py 1001
@@ -23,7 +29,7 @@ python3 src/peerProcess.py 1002
 python3 src/peerProcess.py 1003
 ```
 
-3. view logs produced by the peers:
+4. view logs produced by the peers:
 
 ```bash
 tail -n +1 log_peer_1001.log log_peer_1002.log log_peer_1003.log
