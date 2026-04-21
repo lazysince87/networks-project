@@ -1,8 +1,8 @@
 import math
 
 class ConfigReader:
-    def __init__(self, common_file='templates/Common.cfg',
-                 peer_file='templates/PeerInfo.cfg'):
+    def __init__(self, common_file='Common.cfg',
+                 peer_file='PeerInfo.cfg'):
         self.common_file = common_file
         self.peer_file = peer_file
         self.common_cfg = {}
