@@ -9,15 +9,15 @@ FILE_SIZE=2097152
 rm -f log_peer_*.log
 rm -rf peer_1001 peer_1002 peer_1003
 
-#use local configs
-if [ -f templates/PeerInfo.cfg ]; then
-    cp templates/PeerInfo.cfg templates/PeerInfo.cfg.bak
+#use local configs (swap root-level configs that setup_test.sh and peerProcess.py read)
+if [ -f PeerInfo.cfg ]; then
+    cp PeerInfo.cfg PeerInfo.cfg.bak
 fi
-if [ -f templates/Common.cfg ]; then
-    cp templates/Common.cfg templates/Common.cfg.bak
+if [ -f Common.cfg ]; then
+    cp Common.cfg Common.cfg.bak
 fi
-cp templates/PeerInfo_local.cfg templates/PeerInfo.cfg
-cp templates/Common_local.cfg  templates/Common.cfg
+cp templates/PeerInfo_local.cfg PeerInfo.cfg
+cp templates/Common_local.cfg  Common.cfg
 
 #create dummy file in root
 dd if=/dev/urandom of="${FILE_NAME}" bs=1024 count=$((FILE_SIZE / 1024)) 2>/dev/null
@@ -75,10 +75,10 @@ done
 python3 src/verify.py "peer_1001/${FILE_NAME}" "peer_1002/${FILE_NAME}" || true
 python3 src/verify.py "peer_1001/${FILE_NAME}" "peer_1003/${FILE_NAME}" || true
 
-#clean up configs
-if [ -f templates/PeerInfo.cfg.bak ]; then
-    mv templates/PeerInfo.cfg.bak templates/PeerInfo.cfg
+#clean up configs (restore root-level originals)
+if [ -f PeerInfo.cfg.bak ]; then
+    mv PeerInfo.cfg.bak PeerInfo.cfg
 fi
-if [ -f templates/Common.cfg.bak ]; then
-    mv templates/Common.cfg.bak templates/Common.cfg
+if [ -f Common.cfg.bak ]; then
+    mv Common.cfg.bak Common.cfg
 fi
