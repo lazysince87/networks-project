@@ -79,6 +79,7 @@ class Peer:
         with self.state_lock:
             self.neighbors[remote_id] = {
                 'socket': sock,
+                'send_lock': threading.Lock(),
                 'bitfield': _make_bitfield(self.num_pieces, fill=False),
                 'am_interested': False,
                 'peer_interested': False,
@@ -103,10 +104,12 @@ class Peer:
             if ni is None:
                 return
             sock = ni['socket']
-        try:
-            send_message(sock, msg_type, payload)
-        except Exception:
-            pass
+            send_lock = ni['send_lock']
+        with send_lock:
+            try:
+                send_message(sock, msg_type, payload)
+            except Exception:
+                pass
 
     #server thread
     def _server_thread(self):
