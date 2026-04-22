@@ -20,7 +20,7 @@ class MessageHandler:
         self.logger = logging.getLogger("MessageHandler")
 
     def handle_choke(self, peer):
-        eer['peer_choking'] = True
+        peer['peer_choking'] = True
         peer['requested_piece'] = None  # Reset pending request
         self.logger.info(f"Peer {peer['peer_id']} choked us.")
 
