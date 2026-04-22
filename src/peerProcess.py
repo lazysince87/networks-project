@@ -521,6 +521,9 @@ class Peer:
                 except Exception:
                     pass
 
+    def count_bits(bitfield, num_pieces):
+        return sum(1 for i in range(num_pieces) if has_bit(bitfield, i))
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(1)
