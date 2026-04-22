@@ -28,6 +28,9 @@ class PeerLogger:
         self._write(f'Peer {self.peer_id} is connected from Peer {source_id}.')
 
     def log_preferred_neighbors(self, neighbor_ids):
+        if not neighbor_ids:
+            self._write(f'Peer {self.peer_id} has the preferred neighbors [none].')
+            return
         ids = ','.join(str(n) for n in neighbor_ids)
         self._write(f'Peer {self.peer_id} has the preferred neighbors {ids}.')
 
