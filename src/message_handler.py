@@ -2,7 +2,6 @@ import random
 import logging
 import struct
 
-# Message ID Constants
 CHOKE = 0
 UNCHOKE = 1
 INTERESTED = 2
@@ -21,7 +20,7 @@ class MessageHandler:
 
     def handle_choke(self, peer):
         peer['peer_choking'] = True
-        peer['requested_piece'] = None  # Reset pending request
+        peer['requested_piece'] = None  # Rest pending req
         self.logger.info(f"Peer {peer['peer_id']} choked us.")
 
     def handle_unchoke(self, peer):
@@ -38,7 +37,6 @@ class MessageHandler:
         self.logger.info(f"Peer {peer.peer_id} is NOT interested.")
 
     def handle_have(self, peer, payload):
-        # Fix: Unpack returns a tuple
         piece_index = struct.unpack(">I", payload[:4])
         set_bit(peer.bitfield, piece_index)
         self.logger.info(f"Peer {peer.peer_id} sent HAVE for piece {piece_index}")
@@ -70,7 +68,7 @@ class MessageHandler:
         set_bit(self.my_info.my_bitfield, piece_index)
         self.logger.info(f"Downloaded piece {piece_index} from {peer.peer_id}")
 
-        # Broadcast HAVE to all
+        # say HAVE to all
         for other in self.all_peers.values():
             other.send_have(piece_index)
 
@@ -81,11 +79,10 @@ class MessageHandler:
         if peer.peer_choking:
             return
         
-        # Logic: Pick random missing piece not already requested
+        # piece not req
         needed = []
         for i in range(self.file_manager.num_pieces):
             if has_bit(peer.bitfield, i) and not has_bit(self.my_info.my_bitfield, i):
-                # Check if someone else is already getting this
                 already_asked = any(p.requested_piece == i for p in self.all_peers.values())
                 if not already_asked:
                     needed.append(i)
@@ -107,7 +104,7 @@ class MessageHandler:
                 p.send_not_interested()
                 p.am_interested = False
 
-# --- Bitfield Utilities ---
+# bit field
 def set_bit(bitfield, index):
     byte_index = index // 8
     bit_offset = 7 - (index % 8)
@@ -126,7 +123,7 @@ def create_bitfield(num_pieces, has_file=False):
     num_bytes = (num_pieces + 7) // 8
     bf = bytearray([0xFF if has_file else 0x00] * num_bytes)
     if has_file:
-        # Clear trailing padding bits
+        # Clear it 
         for i in range(num_pieces, num_bytes * 8):
             byte_idx = i // 8
             bit_off = 7 - (i % 8)
