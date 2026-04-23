@@ -6,70 +6,16 @@ team members:
 - Aadithi Arjun
 - Nivedhaa Sankaran
 
-## local testing
+## testing
 
-we have two ways to test the peer network locally: using the automated bash scripts (recommended) or running the peers manually.
+you can configure the network in `PeerInfo.cfg` by adding the peer ids, machine ips, and ports you want to test across. `Common.cfg` contains the parameters like piece size and unchoking intervals for testing different scenarios.
 
-### 1. automated testing (recommended)
+once the configs are consistent across all computers, manually create a directory for your peer on your machine (like `peer_1002/`). the seed machine must have the target file placed inside its peer directory before starting.
 
-our integrated test scripts will automatically create a temporary dummy file, run `setup_test.sh` to construct the peer directories and properly seed the file, start the peers, and verify everything works.
+to start the network, run this command for your peer id:
+`python3 src/peerProcess.py <peer_id>`
 
-> **note for windows users:** please use **Git Bash** or **WSL** to run these `.sh` scripts.
+as the peers boot up, they will establish tcp handshakes and begin sending bitfield messages. the log files `log_peer_<peer_id>.log` will automatically populate with real time updates on choked neighbors, piece requests, and file completion.
 
-to run a full file transfer and automatically verify file integrity:
-```bash
-bash tests/test_full_transfer.sh
-```
-
-to run a quick connection/handshake test:
-```bash
-bash tests/test_local_connections.sh
-```
-
-### 2. manual testing
-
-if you want to manually start the peers to test specific features, run the setup script first.
-
-#### 1. create a dummy test file
-**mac / linux:**
-```bash
-dd if=/dev/urandom of=testfile.dat bs=1024 count=100
-```
-**windows (powershell):**
-```powershell
-fsutil file createnew testfile.dat 102400
-```
-
-#### 2. run the setup script
-run this to construct the peer directories (`peer_1001/`, etc.) and seed the file. pass your filename as an argument (use git bash or wsl on windows):
-```bash
-bash setup_test.sh testfile.dat
-```
-
-#### 3. run the peers manually
-run these commands in separate terminal windows (start them in numerical order):
-
-**mac / linux:**
-```bash
-python3 src/peerProcess.py 1001
-python3 src/peerProcess.py 1002
-python3 src/peerProcess.py 1003
-```
-**windows:**
-```powershell
-python src/peerProcess.py 1001
-python src/peerProcess.py 1002
-python src/peerProcess.py 1003
-```
-
-#### 4. view the logs produced by the peers
-once the peers have finished, you can read the log files in any text editor, or use the terminal:
-
-**mac / linux:**
-```bash
-tail -n +1 log_peer_1001.log log_peer_1002.log log_peer_1003.log
-```
-**windows (powershell):**
-```powershell
-Get-Content log_peer_*.log
-```
+once all processes terminate cleanly, run the verification script to prove the reconstructed file matches the original perfectly:
+`python3 src/verify.py original_file transferred_file`
